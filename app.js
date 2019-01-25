@@ -19,7 +19,10 @@ Change the game to follow these rules:
 */
 
 var scores, roundScore, activePlayer, gamePlaying;
+
 init();
+
+var lastDice;
 
 document.querySelector('.btn-roll').addEventListener('click', function() {
     if (gamePlaying) {
@@ -32,7 +35,14 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
         diceDom.src = 'dice-' + dice + '.png';
 
         //3.update the round score IFF the rolled number is not equal to 1
-        if (dice !== 1) {
+
+        if (dice === 6 && lastDice === 6) {
+            //player loses all his score
+            scores[activePlayer] = 0;
+            //update the ui to show gloabal score
+            document.querySelector('#score-' + activePlayer).textContent = 0;
+            nextPlayer();
+        } else if (dice !== 1) {
             //add the score
             roundScore += dice;
             document.querySelector('#current-' + activePlayer).textContent = roundScore;
@@ -45,6 +55,8 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
 
 
         }
+
+        lastDice = dice;
     }
 
 
@@ -60,7 +72,7 @@ document.querySelector('.btn-hold').addEventListener('click', function() {
         document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
 
         //check if player won the game
-        if (scores[activePlayer] >= 20) {
+        if (scores[activePlayer] >= 100) {
             document.querySelector('#name-' + activePlayer).textContent = 'Winner!';
             document.querySelector('.dice').style.display = 'none';
             document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
